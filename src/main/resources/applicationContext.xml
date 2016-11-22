@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+          http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+          http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+	<!-- 该 BeanPostProcessor 将自动起作用，对标注 @Autowired 的 Bean 进行自动注入 -->     
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+	<!-- 自动扫描且只扫描@Controller -->
+	<context:component-scan base-package="com.rmd">
+		
+	</context:component-scan>
+	<!-- <bean id="catDao" class="com.rmd.search.dao.impl.CategoryDaoImpl"></bean> -->
+</beans>
