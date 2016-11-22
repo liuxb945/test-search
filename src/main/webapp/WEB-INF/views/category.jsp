@@ -98,12 +98,21 @@
                   </c:choose>
                 </c:forEach>
               </select>
+              <div class="col-lg-12">
+                <div class="input-group">
+                    <input id="s_w" type="text" value="${param.s_w }" class="form-control">
+                    <span class="input-group-btn">
+                        <button id="btnSearch" class="btn btn-default" type="button">搜索</button>
+                    </span>
+                </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+            <br/>
 			<label for="name">商品数量：<c:out value="${searchList.getData().size()}"/></label>
 			<br/>
 			<label for="name">分类信息：</label>
 			<ul class="list-group">
 				<c:forEach var="list" items="${searchList.getGroups().get(0).getChildren()}">
-					<li class="list-group-item"><c:out value="${list.name}"/>,<c:out value="${list.id}"/>----数量：<c:out value="${list.count}"/></li>
+					<li class="list-group-item"><c:out value="${list.name}"/>----数量：<c:out value="${list.count}"/></li>
 				</c:forEach>	
 			</ul>
 			<label for="name">商品列表：</label>
@@ -126,7 +135,7 @@
 				if (typeof(cat1) == "undefined") { 
 					   cat1=""; 
 					}
-				listCategory(cat1,"","","");
+				listCategory(cat1,"","","","");
 			});
 			$("#cat2").change(function() {
 				var cat1 = $("#cat1").val();
@@ -137,7 +146,7 @@
 				if (typeof(cat2) == "undefined") { 
 					   cat2=""; 
 					}
-				listCategory(cat1,cat2,"","");
+				listCategory(cat1,cat2,"","","");
 			});
 			$("#cat3").change(function() {
 				var cat1 = $("#cat1").val();
@@ -152,7 +161,7 @@
 				if (typeof(cat3) == "undefined") { 
 					   cat3=""; 
 					} 
-				listCategory(cat1,cat2,cat3,"");
+				listCategory(cat1,cat2,cat3,"","");
 			});
 			$("#sortSel").change(function() {
 				var cat1 = $("#cat1").val();
@@ -171,12 +180,32 @@
 				if (typeof(sortSel) == "undefined") { 
 					sortSel=""; 
 					}
-				listCategory(cat1,cat2,cat3,sortSel);
+				listCategory(cat1,cat2,cat3,sortSel,"");
+			});
+			$("#btnSearch").click(function() {
+				var cat1 = $("#cat1").val();
+				if (typeof(cat1) == "undefined") { 
+					   cat1=""; 
+					} 
+				var cat2 = $("#cat2").val();
+				if (typeof(cat2) == "undefined") { 
+					   cat2=""; 
+					} 
+				var cat3 = $("#cat3").val();
+				if (typeof(cat3) == "undefined") { 
+					   cat3=""; 
+					} 
+				var sortSel = $("#sortSel").val();
+				if (typeof(sortSel) == "undefined") { 
+					sortSel=""; 
+					}
+				var sw = $("#s_w").val();
+				listCategory(cat1,cat2,cat3,sortSel,sw);
 			});
 		});
-		function listCategory(cat1,cat2,cat3,sortby){
+		function listCategory(cat1,cat2,cat3,sortby,sw){
 			 
-			window.location.href="category?cat1="+cat1+"&cat2="+cat2+"&cat3="+cat3+"&sortby="+sortby;
+			window.location.href="category?cat1="+cat1+"&cat2="+cat2+"&cat3="+cat3+"&sortby="+sortby+"&s_w="+sw;
 		}
 	</script>
 </body>

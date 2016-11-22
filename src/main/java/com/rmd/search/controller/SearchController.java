@@ -75,7 +75,7 @@ public class SearchController {
     }
 	
 	@RequestMapping(value="/category",method=RequestMethod.GET)
-    public ModelAndView category(@RequestParam(value="cat1",required=false) String catId1,@RequestParam(value="cat2",required=false) String catId2,@RequestParam(value="cat3",required=false) String catId3,@RequestParam(value="sortby",required=false) String sortBy){
+    public ModelAndView category(@RequestParam(value="cat1",required=false) String catId1,@RequestParam(value="cat2",required=false) String catId2,@RequestParam(value="cat3",required=false) String catId3,@RequestParam(value="sortby",required=false)String sortBy,@RequestParam(value="s_w",required=false) String s_w){
 		ModelAndView modelAndView = new ModelAndView("category");
 		List<Category> list1=new ArrayList<Category>();
 		try {
@@ -109,7 +109,7 @@ public class SearchController {
         modelAndView.addObject("sorts", sorts);
         SearchList<Goods> searchList=null;
         try {
-        	searchList=Query.query(catId1, catId2, catId3, sortBy);
+        	searchList=Query.query(catId1, catId2, catId3, sortBy,s_w);
 		} catch (Exception e) {
 			logger.error("", e);
 		}

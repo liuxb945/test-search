@@ -128,10 +128,16 @@ public class Query {
         return items_rep;
 	}
 	
-	public static SearchList<Goods> query(String catId1,String catId2,String catId3,String sortBy) throws Exception {
+	public static SearchList<Goods> query(String catId1,String catId2,String catId3,String sortBy,String s_w) throws Exception {
 		HttpSolrServer core=SolrUtil.getServer();
 		SolrQuery query = new SolrQuery();
-        query.setQuery("*:*");
+		if(StringUtils.isNotEmpty(s_w)){
+			query.setQuery("name:"+s_w);
+		}
+		else
+		{
+			query.setQuery("*:*");
+		}
         query.setStart(0); // query的开始行数(分页使用)
         query.setRows(1000); // query的返回行数(分页使用)
         query.setFacet(true); // 设置使用facet
