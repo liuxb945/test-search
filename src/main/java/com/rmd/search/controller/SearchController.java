@@ -17,6 +17,7 @@ import com.rmd.search.dao.CategoryDao;
 import com.rmd.search.model.Category;
 import com.rmd.search.model.Goods;
 import com.rmd.search.model.Option;
+import com.rmd.search.model.PropertyType;
 import com.rmd.search.model.SearchList;
 import com.rmd.search.query.Query;
 
@@ -70,6 +71,10 @@ public class SearchController {
 			}
 		} catch (Exception e) {
 			logger.error("", e);
+		}
+		List<PropertyType> propTypeList=null;
+		if(StringUtils.isNotEmpty(catId3)){
+			
 		}
         modelAndView.addObject("items1", list1);
         modelAndView.addObject("items2", list2);

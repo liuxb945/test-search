@@ -114,6 +114,8 @@ public class Query {
 		{
 			query.setQuery("*:*");
 		}
+		query.setParam("q.op", "OR");
+        query.setParam("df", "name");
 		query.setHighlight(true); // 开启高亮组件或用query.setParam("hl", "true");  
         query.addHighlightField("name");// 高亮字段  
         query.setHighlightSimplePre("<font color='red'>");//标记，高亮关键字前缀  
