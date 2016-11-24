@@ -17,6 +17,7 @@ import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.params.FacetParams;
+import org.apache.solr.common.util.NamedList;
 import org.junit.Test;
 
 import com.rmd.search.model.Category;
@@ -54,14 +55,15 @@ public class Query {
 	}
 	@Test
 	public void test(){
-		
+		HttpSolrServer core=SolrUtil.getServer();
 	}
 	@Test
 	public void search() throws Exception {
 		HttpSolrServer core=SolrUtil.getServer();
 		SolrQuery query = new SolrQuery();
 //        query.setQuery("*:*");
-		query.setQuery("name:奥美康");
+		query.setQuery("name:(奥美康)");
+		System.out.println("SolrQuery: " +query.toString());
         query.setStart(0); // query的开始行数(分页使用)
         query.setRows(100); // query的返回行数(分页使用)
         query.setFacet(true); // 设置使用facet
@@ -69,7 +71,7 @@ public class Query {
         query.setFacetLimit(100); // facet结果的返回行数
         query.addFacetField("threeCategoryId","twoCategoryId","oneCategoryId", "brandId"); // facet的字段
         query.setFacetSort(FacetParams.FACET_SORT_COUNT);
-        query.addFilterQuery("twoCategoryId:178");
+        //query.addFilterQuery("twoCategoryId:178");
         query.addSort(new SortClause("id", ORDER.asc)); // 排序
         QueryResponse response = core.query(query);
         List<Goods> items_rep = response.getBeans(Goods.class);
@@ -103,41 +105,23 @@ public class Query {
         }
 	}
 	
-	public static List<Goods> queryCategory1(String catId) throws Exception {
-		HttpSolrServer core=SolrUtil.getServer();
-		SolrQuery query = new SolrQuery();
-        query.setQuery("*:*");
-        query.setStart(0); // query的开始行数(分页使用)
-        query.setRows(1000); // query的返回行数(分页使用)
-        query.setFacet(true); // 设置使用facet
-        query.setFacetMinCount(1); // 设置facet最少的统计数量
-        query.setFacetLimit(100); // facet结果的返回行数
-        query.addFacetField("threeCategoryId","twoCategoryId","oneCategoryId", "brandId"); // facet的字段
-        query.setFacetSort(FacetParams.FACET_SORT_COUNT);
-        query.addFilterQuery("oneCategoryId:"+catId);
-        query.addSort(new SortClause("id", ORDER.asc)); // 排序
-        QueryResponse response = core.query(query);
-        List<Goods> items_rep = response.getBeans(Goods.class);
-        List<FacetField> facetFields = response.getFacetFields();
-        // 因为上面的start和rows均设置为0，所以这里不会有query结果输出
-        System.out.println("--------------------");
-        System.out.println("Search result:");
-        for (Goods item : items_rep) {
-            System.out.println(item);
-        }
-        return items_rep;
-	}
-	
 	public static SearchList<Goods> query(String catId1,String catId2,String catId3,String sortBy,String s_w) throws Exception {
 		HttpSolrServer core=SolrUtil.getServer();
 		SolrQuery query = new SolrQuery();
 		if(StringUtils.isNotEmpty(s_w)){
-			query.setQuery("name:"+s_w);
+			query.setQuery("+name:"+s_w );
+//			String params = "(title:笔记 OR content:笔记) AND catalog_id:2";
+//			SolrQuery query = new SolrQuery();
+//			query.setQuery(params);
 		}
 		else
 		{
 			query.setQuery("*:*");
 		}
+		query.setHighlight(true); // 开启高亮组件或用query.setParam("hl", "true");  
+        query.addHighlightField("name");// 高亮字段  
+        query.setHighlightSimplePre("<font color='red'>");//标记，高亮关键字前缀  
+        query.setHighlightSimplePost("</font>");//后缀 
         query.setStart(0); // query的开始行数(分页使用)
         query.setRows(1000); // query的返回行数(分页使用)
         query.setFacet(true); // 设置使用facet
@@ -166,6 +150,16 @@ public class Query {
         System.out.println("Search result:");
         for (Goods item : items_rep) {
             System.out.println(item);
+        }
+        Map<String, Map<String, List<String>>> hightlights = response.getHighlighting();
+        for(Goods g:items_rep){
+        	Map<String,List<String>> hlMap=hightlights.get(String.valueOf(g.getId()));
+        	if(hlMap!=null){
+        		List<String> hlList=hlMap.get("name");
+        		if(hlList!=null&&hlList.size()>0){
+        			g.setName(hlList.get(0));
+        		}
+        	}
         }
         init();
         List<Group> groupList=new ArrayList<Group>();

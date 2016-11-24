@@ -156,6 +156,11 @@
 			<version>2.1</version>
 			<classifier>jdk15</classifier>
 		</dependency>
+		<dependency>  
+		   <groupId>commons-dbcp</groupId>  
+		   <artifactId>commons-dbcp</artifactId>  
+		   <version>1.4</version>  
+		</dependency>
 
 
 

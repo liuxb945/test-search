@@ -42,37 +42,6 @@ public class SearchController {
         return modelAndView;
     }
 	
-	@RequestMapping(value="/category1",method=RequestMethod.GET)
-    public ModelAndView category1(@RequestParam("cat") int catId){
-		ModelAndView modelAndView = new ModelAndView("category1");
-		List<Category> list1=null;
-		try {
-			list1=catDao.loadByPid(0);
-		} catch (Exception e) {
-			logger.error("", e);
-		}
-		List<Category> list2=null;
-		try {
-			list2=catDao.loadByPid(catId);
-		} catch (Exception e) {
-			logger.error("", e);
-		}
-        modelAndView.addObject("items1", list1);
-        modelAndView.addObject("items2", list2);
-        List<Option> sorts=new ArrayList<Option>();
-        sorts.add(new Option("","请选择"));
-        sorts.add(new Option("id","id"));
-        sorts.add(new Option("indbtime","日期"));
-        modelAndView.addObject("sorts", sorts);
-        List<Goods> goodsList=null;
-        try {
-			goodsList=Query.queryCategory1(String.valueOf(catId));
-		} catch (Exception e) {
-			logger.error("", e);
-		}
-        modelAndView.addObject("goodsList", goodsList);
-        return modelAndView;
-    }
 	
 	@RequestMapping(value="/category",method=RequestMethod.GET)
     public ModelAndView category(@RequestParam(value="cat1",required=false) String catId1,@RequestParam(value="cat2",required=false) String catId2,@RequestParam(value="cat3",required=false) String catId3,@RequestParam(value="sortby",required=false)String sortBy,@RequestParam(value="s_w",required=false) String s_w){

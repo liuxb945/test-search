@@ -31,7 +31,7 @@ public class Goods implements Serializable {
 	@Field
 	private String threeCategoryName;
 	//@Field
-	private List<PropItem> propList;
+	private List<PropertyItem> propList;
 	@Field
 	private Long brandId;
 	@Field
@@ -44,13 +44,22 @@ public class Goods implements Serializable {
 	private Double prefprice;
 	@Field
 	private String code;
+	@Field
+	private String propVals;
+	public String getPropVals() {
+		return propVals;
+	}
 	@Override
 	public String toString() {
 		return "Goods [id=" + id + ", name=" + name + ", subname=" + subname + ", oneCategoryId=" + oneCategoryId
 				+ ", oneCategoryName=" + oneCategoryName + ", twoCategoryId=" + twoCategoryId + ", twoCategoryName="
 				+ twoCategoryName + ", threeCategoryId=" + threeCategoryId + ", threeCategoryName=" + threeCategoryName
 				+ ", propList=" + propList + ", brandId=" + brandId + ", brandName=" + brandName + ", indbtime="
-				+ indbtime + ", modifytime=" + modifytime + ", prefprice=" + prefprice + ", code=" + code + "]";
+				+ indbtime + ", modifytime=" + modifytime + ", prefprice=" + prefprice + ", code=" + code
+				+ ", propVals=" + propVals + "]";
+	}
+	public void setPropVals(String propVals) {
+		this.propVals = propVals;
 	}
 	public Double getPrefprice() {
 		return prefprice;
@@ -118,10 +127,10 @@ public class Goods implements Serializable {
 	public void setThreeCategoryName(String threeCategoryName) {
 		this.threeCategoryName = threeCategoryName;
 	}
-	public List<PropItem> getPropMap() {
+	public List<PropertyItem> getPropMap() {
 		return propList;
 	}
-	public void setPropMap(List<PropItem> propList) {
+	public void setPropMap(List<PropertyItem> propList) {
 		this.propList = propList;
 	}
 	public Long getBrandId() {

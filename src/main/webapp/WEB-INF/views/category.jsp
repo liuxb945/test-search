@@ -118,7 +118,7 @@
 			<label for="name">商品列表：</label>
 			<ul class="list-group">
 				<c:forEach var="list" items="${searchList.getData()}">
-					<li class="list-group-item"><c:out value="${list.name}"/>,<c:out value="${list.id}"/>----<c:out value="${list.oneCategoryName}"/>---<c:out value="${list.twoCategoryName}"/>---<c:out value="${list.threeCategoryName}"/></li>
+					<li class="list-group-item"><c:out value="${list.name}" escapeXml="false"/>,<c:out value="${list.id}"/>----<c:out value="${list.oneCategoryName}"/>---<c:out value="${list.twoCategoryName}"/>---<c:out value="${list.threeCategoryName}"/></li>
 				</c:forEach>	
 			</ul>
 		</div>
