@@ -1,8 +1,6 @@
 package com.rmd.search.index;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,7 +9,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
@@ -26,7 +23,6 @@ import com.rmd.search.dao.GoodsDao;
 import com.rmd.search.dao.PropertyDao;
 import com.rmd.search.model.Goods;
 import com.rmd.search.model.PropertyItem;
-import com.rmd.search.utils.JdbcUtil;
 import com.rmd.search.utils.SolrUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)     //表示继承了SpringJUnit4ClassRunner类  

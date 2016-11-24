@@ -6,4 +6,5 @@ import com.rmd.search.model.Category;
 
 public interface CategoryDao {
 	public List<Category> loadByPid(Integer pid) throws Exception;
+	public List<Category> loadAll();
 }

@@ -1,12 +1,11 @@
 package com.rmd.search.query;
 
-import java.lang.reflect.Field;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -17,40 +16,37 @@ import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.params.FacetParams;
-import org.apache.solr.common.util.NamedList;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.rmd.search.dao.CategoryDao;
 import com.rmd.search.model.Category;
 import com.rmd.search.model.Goods;
 import com.rmd.search.model.Group;
 import com.rmd.search.model.SearchList;
-import com.rmd.search.utils.JdbcUtil;
 import com.rmd.search.utils.SolrUtil;
 
+@RunWith(SpringJUnit4ClassRunner.class)     //表示继承了SpringJUnit4ClassRunner类  
+@ContextConfiguration(locations = {"classpath:applicationContext.xml"})
+@Component("query")
 public class Query {
+	
+	@Resource(name="catDao")
+	private CategoryDao catDao;
+	
 	private static HashMap<Integer, Category> mapCategory = new HashMap<Integer, Category>();
 	
-	public static void init() throws Exception {
+	public void init() throws Exception {
 		if(mapCategory.size()>0){
 			return;
 		}
-		String sql="select id,categoryname name,parentid pid from t_goods_category";
-		Connection conn = JdbcUtil.getConnection();
-		List<HashMap> listMap = JdbcUtil.queryList(sql, conn, true);
-		System.out.println(listMap.size());
-		for (HashMap map : listMap) {
-			Iterator iter = map.entrySet().iterator();
-			Class c=Category.class;
-			Category cat=new Category();
-			while (iter.hasNext()) {
-				Map.Entry entry = (Map.Entry) iter.next();
-				Object key = entry.getKey();
-				Object val = entry.getValue();
-				Field f=c.getDeclaredField((String) key);
-				f.setAccessible(true);
-				f.set(cat, val);
-			}
-			mapCategory.put(cat.getId(), cat);
+		List<Category> list=this.catDao.loadAll();
+		for(Category c:list){
+			mapCategory.put(c.getId(), c);
 		}
 	}
 	@Test
@@ -105,7 +101,7 @@ public class Query {
         }
 	}
 	
-	public static SearchList<Goods> query(String catId1,String catId2,String catId3,String sortBy,String s_w) throws Exception {
+	public SearchList<Goods> query(String catId1,String catId2,String catId3,String sortBy,String s_w) throws Exception {
 		HttpSolrServer core=SolrUtil.getServer();
 		SolrQuery query = new SolrQuery();
 		if(StringUtils.isNotEmpty(s_w)){

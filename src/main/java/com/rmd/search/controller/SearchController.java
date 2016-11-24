@@ -29,6 +29,9 @@ public class SearchController {
 	@Resource(name="catDao")
 	private CategoryDao catDao;
 	
+	@Resource(name="query")
+	private Query querySrv;
+	
 	@RequestMapping(value="/index",method=RequestMethod.GET)
     public ModelAndView index(){
 		ModelAndView modelAndView = new ModelAndView("firstIndex");
@@ -78,7 +81,7 @@ public class SearchController {
         modelAndView.addObject("sorts", sorts);
         SearchList<Goods> searchList=null;
         try {
-        	searchList=Query.query(catId1, catId2, catId3, sortBy,s_w);
+        	searchList=this.querySrv.query(catId1, catId2, catId3, sortBy,s_w);
 		} catch (Exception e) {
 			logger.error("", e);
 		}
