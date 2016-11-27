@@ -14,6 +14,7 @@ public class PropertyItem implements Serializable {
 	private Integer propertyTypeId;
 	private Integer goodsTypeId;
 	private Integer saleid;
+	private Boolean selected;
 	public Integer getId() {
 		return id;
 	}
@@ -63,6 +64,12 @@ public class PropertyItem implements Serializable {
 	}
 	public void setSaleid(Integer saleid) {
 		this.saleid = saleid;
+	}
+	public Boolean getSelected() {
+		return selected;
+	}
+	public void setSelected(Boolean selected) {
+		this.selected = selected;
 	}
 
 }

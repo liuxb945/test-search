@@ -10,6 +10,7 @@ public class Category implements Serializable {
 	private Integer id;
 	private String name;
 	private Integer pid;
+	private Integer goodsTypeId;
 	public Integer getId() {
 		return id;
 	}
@@ -27,6 +28,12 @@ public class Category implements Serializable {
 	}
 	public void setPid(Integer pid) {
 		this.pid = pid;
+	}
+	public Integer getGoodsTypeId() {
+		return goodsTypeId;
+	}
+	public void setGoodsTypeId(Integer goodsTypeId) {
+		this.goodsTypeId = goodsTypeId;
 	}
 	
 

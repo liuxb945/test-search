@@ -25,6 +25,7 @@
     <![endif]-->
 </head>
 <body>
+	<input id="hev" type="hidden" value='<c:out value="${param.ev}"/>'/>
 	<form role="form" action="search/search.do" method="post">
 		<div class="form-group">
 			<label for="name">一级分类</label>
@@ -98,7 +99,30 @@
                   </c:choose>
                 </c:forEach>
               </select>
-              <div class="col-lg-12">
+            <label for="name">商品属性</label> 
+			<dl class="dl-horizontal">
+				<c:forEach var="list" items="${propTypeList}">
+	                 <dt class="list-group-item"><c:out value="${list.name}"/>
+	                 </dt>
+					<dd>
+						<select class="form-control" onchange='propSelect(<c:out value="${list.id}"/>,this.value)'>
+							<c:forEach var="list1" items="${list.propItems}">
+								<c:choose>
+				                    <c:when test="${list1.selected==true}">
+				                       <option value="${list1.id}" selected="selected"><c:out value="${list1.name}"/></option>
+				                    </c:when>
+				                    <c:otherwise>
+				                        <option value="${list1.id}"><c:out value="${list1.name}"/></option>
+				                    </c:otherwise>
+				                  </c:choose>
+								<%-- <option value="${list1.id}"><c:out value="${list1.name}"/></option> --%>
+							</c:forEach>
+						</select>
+					</dd>
+				</c:forEach>
+            </dl>
+            
+			<div class="col-lg-12">
                 <div class="input-group">
                     <input id="s_w" type="text" value="${param.s_w }" class="form-control">
                     <span class="input-group-btn">
@@ -206,6 +230,35 @@
 		function listCategory(cat1,cat2,cat3,sortby,sw){
 			 
 			window.location.href="category?cat1="+cat1+"&cat2="+cat2+"&cat3="+cat3+"&sortby="+sortby+"&s_w="+sw;
+		}
+		function propSelect(key,val){
+			var cat1 = $("#cat1").val();
+			if (typeof(cat1) == "undefined") { 
+				   cat1=""; 
+				} 
+			var cat2 = $("#cat2").val();
+			if (typeof(cat2) == "undefined") { 
+				   cat2=""; 
+				} 
+			var cat3 = $("#cat3").val();
+			if (typeof(cat3) == "undefined") { 
+				   cat3=""; 
+				} 
+			var sortSel = $("#sortSel").val();
+			if (typeof(sortSel) == "undefined") { 
+				sortSel=""; 
+				}
+			var sw = $("#s_w").val();
+			var kv=key+"_"+val;
+			var ev=$("#hev").val();
+			if(ev==""||ev.indexOf(kv)<0){
+				if(ev==""){
+					ev=kv;
+				}else{
+					ev=ev+":"+kv;
+				}
+				window.location.href="category?cat1="+cat1+"&cat2="+cat2+"&cat3="+cat3+"&sortby="+sortSel+"&s_w="+sw+"&ev="+ev;
+			}
 		}
 	</script>
 </body>

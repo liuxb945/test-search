@@ -27,14 +27,20 @@ public class CategoryDaoImpl implements CategoryDao {
 
 	@Override
 	public List<Category> loadByPid(Integer pid) throws Exception {
-		String sql="select id,parentid pid,categoryname name from t_goods_category where parentid= "+pid;
+		String sql="select id,parentid pid,categoryname name,goodstypeid goodsTypeId from t_goods_category where parentid= "+pid;
 		return (List<Category>)template.query(sql, new BeanPropertyRowMapper(Category.class));
 	}
 
 	@Override
 	public List<Category> loadAll() {
-		String sql="select id,categoryname name,parentid pid from t_goods_category";
+		String sql="select id,categoryname name,parentid pid,goodstypeid goodsTypeId from t_goods_category";
 		return (List<Category>)template.query(sql, new BeanPropertyRowMapper(Category.class));
+	}
+
+	@Override
+	public Category loadById(Integer id) {
+		String sql="select id,parentid pid,categoryname name,goodstypeid goodsTypeId from t_goods_category where id= ?";  
+        return template.queryForObject(sql, new Object[] { id }, new BeanPropertyRowMapper(Category.class));
 	}
 
 }

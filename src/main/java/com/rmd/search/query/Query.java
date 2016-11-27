@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.annotation.Resource;
 
@@ -18,15 +20,18 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.params.FacetParams;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.rmd.search.dao.CategoryDao;
+import com.rmd.search.dao.PropertyDao;
 import com.rmd.search.model.Category;
 import com.rmd.search.model.Goods;
 import com.rmd.search.model.Group;
+import com.rmd.search.model.PropertyItem;
+import com.rmd.search.model.PropertyType;
 import com.rmd.search.model.SearchList;
 import com.rmd.search.utils.SolrUtil;
 
@@ -38,7 +43,11 @@ public class Query {
 	@Resource(name="catDao")
 	private CategoryDao catDao;
 	
+	@Resource(name="propertyDao")
+	private PropertyDao propertyDao;
+	
 	private static HashMap<Integer, Category> mapCategory = new HashMap<Integer, Category>();
+	private static HashMap<Integer, PropertyType> mapPropertyType = new HashMap<Integer, PropertyType>();
 	
 	public void init() throws Exception {
 		if(mapCategory.size()>0){
@@ -47,6 +56,15 @@ public class Query {
 		List<Category> list=this.catDao.loadAll();
 		for(Category c:list){
 			mapCategory.put(c.getId(), c);
+		}
+		if(mapPropertyType.size()>0){
+			return;
+		}
+		List<PropertyType> propTypeList=this.propertyDao.loadAllPropertyTypes();
+		for(PropertyType pt:propTypeList){
+			mapPropertyType.put(pt.getId(), pt);
+			List<PropertyItem> items=this.propertyDao.loadPropertyItmesByPropTypeId(pt.getId());
+			pt.setPropItems(items);
 		}
 	}
 	@Test
@@ -101,7 +119,7 @@ public class Query {
         }
 	}
 	
-	public SearchList<Goods> query(String catId1,String catId2,String catId3,String sortBy,String s_w) throws Exception {
+	public SearchList<Goods> query(String catId1,String catId2,String catId3,String sortBy,String s_w,String ev) throws Exception {
 		HttpSolrServer core=SolrUtil.getServer();
 		SolrQuery query = new SolrQuery();
 		if(StringUtils.isNotEmpty(s_w)){
@@ -125,7 +143,7 @@ public class Query {
         query.setFacet(true); // 设置使用facet
         query.setFacetMinCount(1); // 设置facet最少的统计数量
         query.setFacetLimit(100); // facet结果的返回行数
-        query.addFacetField("threeCategoryId","twoCategoryId","oneCategoryId", "brandId"); // facet的字段
+        query.addFacetField("threeCategoryId","twoCategoryId","oneCategoryId", "brandId","propVals"); // facet的字段
         query.setFacetSort(FacetParams.FACET_SORT_COUNT);
         if(StringUtils.isNotEmpty(catId3)){
         	query.addFilterQuery("threeCategoryId:"+catId3);
@@ -134,10 +152,30 @@ public class Query {
         }else if(StringUtils.isNotEmpty(catId1)){
         	query.addFilterQuery("oneCategoryId:"+catId1);
         }
+        TreeMap<Integer, String> treeMap = new TreeMap<Integer, String>();
+        if(StringUtils.isNotEmpty(ev)){
+        	if(ev.indexOf(":")>0){
+        		String[] kvs=ev.split(":");
+        		String str="*";
+        		for(String kv:kvs){
+        			String[] arr=kv.split("_");
+        			treeMap.put(Integer.parseInt(arr[0]), kv);
+        		}
+        		for(Entry<Integer,String> entry:treeMap.entrySet()){
+        			str+=entry.getValue()+"*";
+        		}
+        		ev=str;
+        	}else{
+        		ev="*"+ev+"*";
+        	}
+        	
+        	query.addFilterQuery("propVals:"+ev);
+        	System.out.println("propVals:"+ev);
+        }
         if(StringUtils.isNotEmpty(sortBy)){
         	query.addSort(new SortClause(sortBy, ORDER.desc)); // 排序
         }else{
-        	query.addSort(new SortClause("id", ORDER.asc)); // 排序
+//        	query.addSort(new SortClause("id", ORDER.asc)); // 排序
         }
         
         QueryResponse response = core.query(query);
@@ -188,6 +226,31 @@ public class Query {
             		cg.setName(strName);
             		cg.setCount(count.getCount());
             		pg.getChildren().add(cg);
+            	}
+            	else if(ff.getName().equals("propVals")){
+            		Map<String,PropertyType> tempPropTypeMap=new HashMap<String,PropertyType>();
+            		String kvs=count.getName();
+            		Map<String,List<Integer>> kvMap=new HashMap<String,List<Integer>>();
+            		if(StringUtils.isNotEmpty(kvs))
+            		{
+            			String[] kvArrs=kvs.split(",");
+            			for(String kv:kvArrs){
+            				String[] pair=kv.split("_");
+            				String key=pair[0];
+            				if(!tempPropTypeMap.containsKey(key)){
+            					PropertyType pt=mapPropertyType.get(key);
+        	            		PropertyType pt1=new PropertyType();
+        	            		BeanUtils.copyProperties(pt, pt1);
+        	            		pt1.setPropItems(new ArrayList<PropertyItem>());
+        	            		tempPropTypeMap.put(key, pt1);
+            				}
+            				PropertyType pt=tempPropTypeMap.get(key);
+            			}
+            			
+            		}
+            	}
+            	else{
+            		System.out.println("id=" + count.getName() + "\tcount=" + count.getCount());
             	}
             }
             

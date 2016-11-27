@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class PropertyType implements Serializable {
+	public PropertyType(){}
 	public PropertyType(Integer id, String name, List<PropertyItem> propItems) {
 		super();
 		this.id = id;
