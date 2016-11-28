@@ -255,7 +255,16 @@
 				if(ev==""){
 					ev=kv;
 				}else{
-					ev=ev+":"+kv;
+					//var re=/(\d+)\.(\d+)\.(\d+)\.(\d+)/g;
+					var str=key+"_"+"(\d+)"
+					var re=new RegExp(str);
+					if(re.test(ev)){
+						ev=ev.replace(str, kv);
+					}
+					else{
+						ev=ev+":"+kv;
+					}
+					
 				}
 				window.location.href="category?cat1="+cat1+"&cat2="+cat2+"&cat3="+cat3+"&sortby="+sortSel+"&s_w="+sw+"&ev="+ev;
 			}

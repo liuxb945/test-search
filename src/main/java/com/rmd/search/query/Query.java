@@ -48,6 +48,7 @@ public class Query {
 	
 	private static HashMap<Integer, Category> mapCategory = new HashMap<Integer, Category>();
 	private static HashMap<Integer, PropertyType> mapPropertyType = new HashMap<Integer, PropertyType>();
+	private static HashMap<Integer,PropertyItem> mapPropertyItem=new HashMap<Integer,PropertyItem>();
 	
 	public void init() throws Exception {
 		if(mapCategory.size()>0){
@@ -65,6 +66,13 @@ public class Query {
 			mapPropertyType.put(pt.getId(), pt);
 			List<PropertyItem> items=this.propertyDao.loadPropertyItmesByPropTypeId(pt.getId());
 			pt.setPropItems(items);
+		}
+		if(mapPropertyItem.size()>0){
+			return;
+		}
+		List<PropertyItem> propItemList=this.propertyDao.loadAllPropertyItmes();
+		for(PropertyItem item:propItemList){
+			mapPropertyItem.put(item.getId(), item);
 		}
 	}
 	@Test
@@ -133,7 +141,7 @@ public class Query {
 			query.setQuery("*:*");
 		}
 		query.setParam("q.op", "OR");
-        query.setParam("df", "name");
+        query.setParam("df", "se");
 		query.setHighlight(true); // 开启高亮组件或用query.setParam("hl", "true");  
         query.addHighlightField("name");// 高亮字段  
         query.setHighlightSimplePre("<font color='red'>");//标记，高亮关键字前缀  
@@ -177,7 +185,8 @@ public class Query {
         }else{
 //        	query.addSort(new SortClause("id", ORDER.asc)); // 排序
         }
-        
+        SearchList<Goods> searchList=new SearchList<>();
+        searchList.setPropertyTypes(new ArrayList<PropertyType>());
         QueryResponse response = core.query(query);
         List<Goods> items_rep = response.getBeans(Goods.class);
         List<FacetField> facetFields = response.getFacetFields();
@@ -238,13 +247,24 @@ public class Query {
             				String[] pair=kv.split("_");
             				String key=pair[0];
             				if(!tempPropTypeMap.containsKey(key)){
-            					PropertyType pt=mapPropertyType.get(key);
+            					PropertyType pt=mapPropertyType.get(Integer.parseInt(key));
+            					if(pt==null){
+            						continue;
+            					}
         	            		PropertyType pt1=new PropertyType();
         	            		BeanUtils.copyProperties(pt, pt1);
         	            		pt1.setPropItems(new ArrayList<PropertyItem>());
         	            		tempPropTypeMap.put(key, pt1);
             				}
             				PropertyType pt=tempPropTypeMap.get(key);
+            				if(pt!=null){
+            					PropertyItem item=mapPropertyItem.get(Integer.parseInt(pair[1]));
+                				if(item!=null){
+                					pt.getPropItems().add(item);
+                				}
+                				searchList.getPropertyTypes().add(pt);
+            				}
+            				
             			}
             			
             		}
@@ -255,7 +275,7 @@ public class Query {
             }
             
         }
-        SearchList<Goods> searchList=new SearchList<>();
+        
         searchList.setData(items_rep);
         searchList.setGroups(groupList);
         return searchList;

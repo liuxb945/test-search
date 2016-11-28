@@ -106,7 +106,7 @@ public class SearchController {
 		} catch (Exception e) {
 			logger.error("", e);
 		}
-        List<PropertyType> propTypeList=new ArrayList<PropertyType>();
+        /*List<PropertyType> propTypeList=new ArrayList<PropertyType>();
 		for (String propTypeId : propTypeIdList) {
 			PropertyType ptype = this.propertyDao.loadPropertyTypeById(Integer.parseInt(propTypeId));
 			List<PropertyItem> propItems = this.propertyDao.loadPropertyItmesByPropTypeId(ptype.getId());
@@ -121,8 +121,9 @@ public class SearchController {
 			}
 			ptype.setPropItems(propItems);
 			propTypeList.add(ptype);
-		}
-		modelAndView.addObject("propTypeList", propTypeList);
+		}*/
+		//modelAndView.addObject("propTypeList", propTypeList);
+        modelAndView.addObject("propTypeList", searchList.getPropertyTypes());
         modelAndView.addObject("searchList", searchList);
         return modelAndView;
     }

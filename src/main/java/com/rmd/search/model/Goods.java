@@ -36,6 +36,12 @@ public class Goods implements Serializable {
 	private Long brandId;
 	@Field
 	private String brandName;
+	public List<PropertyItem> getPropList() {
+		return propList;
+	}
+	public void setPropList(List<PropertyItem> propList) {
+		this.propList = propList;
+	}
 	@Field
 	private Date indbtime;
 	@Field
@@ -46,6 +52,14 @@ public class Goods implements Serializable {
 	private String code;
 	@Field
 	private String propVals;
+	@Field
+	private String imgurl;
+	public String getImgurl() {
+		return imgurl;
+	}
+	public void setImgurl(String imgurl) {
+		this.imgurl = imgurl;
+	}
 	public String getPropVals() {
 		return propVals;
 	}
@@ -56,7 +70,7 @@ public class Goods implements Serializable {
 				+ twoCategoryName + ", threeCategoryId=" + threeCategoryId + ", threeCategoryName=" + threeCategoryName
 				+ ", propList=" + propList + ", brandId=" + brandId + ", brandName=" + brandName + ", indbtime="
 				+ indbtime + ", modifytime=" + modifytime + ", prefprice=" + prefprice + ", code=" + code
-				+ ", propVals=" + propVals + "]";
+				+ ", propVals=" + propVals + ", imgurl=" + imgurl + "]";
 	}
 	public void setPropVals(String propVals) {
 		this.propVals = propVals;
